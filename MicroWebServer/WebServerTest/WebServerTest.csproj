@@ -47,6 +47,7 @@
     <Reference Include="Microsoft.SPOT.Hardware" />
     <Reference Include="Microsoft.SPOT.Native">
     </Reference>
+    <Reference Include="Microsoft.SPOT.Net" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -58,5 +59,11 @@
   <ItemGroup>
     <Content Include="Resources\Index.htm" />
     <Content Include="Resources\MyStyles.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MicroWebServer\MicroWebServer.csproj">
+      <Project>{8B853365-88A5-48B7-B040-26A8B18016F5}</Project>
+      <Name>MicroWebServer</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
