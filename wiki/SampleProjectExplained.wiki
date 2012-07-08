@@ -6,7 +6,7 @@ Please open the program.cs file of the WebServerTest project.  It contains a sma
 
 = Details =
 
-*webServer.Add(new RequestRoute("/", Resources.StringResources.Index, "text/html"));*
+{{{webServer.Add(new RequestRoute("/", Resources.StringResources.Index, "text/html"));}}}
 
 When the "/" url is requested from the server, it will return the resource file named "Index" with content type 
 
