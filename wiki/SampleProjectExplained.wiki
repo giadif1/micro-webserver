@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Please open the program.cs file of the WebServerTest project.  It contains a small example of how the MicroWebServer can be used
+the program.cs file of the WebServerTest project contains a small example of how the MicroWebServer can be used
 
 = Details =
 
