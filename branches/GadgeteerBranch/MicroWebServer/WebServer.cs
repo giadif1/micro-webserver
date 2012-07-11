@@ -3,87 +3,71 @@ using System.Net;
 using System.Threading;
 using Microsoft.SPOT;
 using System.Resources;
+using Gadgeteer.Networking;
+using Microsoft.SPOT.Net.NetworkInformation;
+using gWebServer = Gadgeteer.Networking.WebServer;
+using gHttpMethod = Gadgeteer.Networking.WebServer.HttpMethod;
 
 namespace MicroWebServer
 {
     public class WebServer
     {
         private readonly RequestRouteList routeList;
-        private Thread mainThread;
         private readonly ILog log;
-        private HttpListener listener;
         private readonly ResourceManager resourceManager;
 
         public WebServer(ILog log, ResourceManager resourceManager)
         {
             this.log = log;
             routeList = new RequestRouteList();
-            mainThread = new Thread(MainThreadHandler);
-            mainThread.Start();
             this.resourceManager = resourceManager;
+            NetworkInterface NI = NetworkInterface.GetAllNetworkInterfaces()[0];
+
+            gWebServer.StartLocalServer(NI.IPAddress, 80);
         }
 
-        public bool MainThreadIsAlive { get { return mainThread.IsAlive; } }
 
-        public ThreadState MainThreadStatus { get { return mainThread.ThreadState; } }
-
-        public void RestartMainThread()
+        //For static text resource files (only for GET requests)
+        public void Add(string path, Enum fileResource, string contentType)
         {
-            mainThread.Abort();
-            Thread.Sleep(2000);
-            //log.Report(PriorityType.Alert, "Webserver", "Creating a new main thread for the webserver !!!");
-            mainThread = new Thread(MainThreadHandler);
-            mainThread.Start();
+            routeList.Add(new RequestRoute(path, fileResource, contentType));
+            gWebServer.SetupWebEvent(path).WebEventReceived += MicroWebServer_WebEventReceived;
         }
 
-        public void Add(RequestRoute route)
+        //For callback responses
+        public void Add(string path, HttpMethod httpMethod, WebRequestHandler requestHandler)
         {
-            routeList.Add(route);
+            routeList.Add(new RequestRoute(path, httpMethod, requestHandler));
         }
 
-        private void MainThreadHandler()
+        //For Gadgeteer event responses
+        public void Add(string path, WebEvent eEvent)
         {
-            listener = new HttpListener("http");
-            bool abortRequested = false;
-            listener.Start();
+            throw new NotImplementedException();
+        }
 
-            //TODO: Threading verhaal nog te bekijken !!
-            while (!abortRequested)
+        void MicroWebServer_WebEventReceived(string path, gHttpMethod httpMethod, Responder responder)
+        {
+            var request = new WebRequest(responder);
+            var method = request.Method;
+            
+            if(!routeList.Contains(method, path))
             {
-                try
-                {
-                    Debug.Print("Webserver while loop beginning");
-                    var context = listener.GetContext();
-                    var path = context.Request.Url.OriginalString;
-                    var method = context.Request.HttpMethod.HttpMethodParse();
-                    //Debug.Print("Webserver incoming request : '" + url + "'");
-
-                    WebResponse response = new NotFoundResponse(path);
-
-                    if (routeList.Contains(method, path))
-                    {
-                        var route = routeList.Find(method, path);
-                        if (route.IsFileResponse)
-                        {
-                            string content = (string) ResourceUtility.GetObject(resourceManager, route.FileResource);
-                            response = new FileResponse(content, route.ContentType);
-                        }
-                        else
-                        {
-                            var webRequest = new WebRequest(context.Request);
-                            response = route.RequestHandler(webRequest);
-                        }
-                    }
-
-                    response.Respond(context);
-                    context.Close();
-                }
-                catch (Exception exception)
-                {
-                    listener.Stop();
-                    listener.Close();
-                    abortRequested = true;
-                }
+                //TODO: how to send a status code with the Gadgeteer web server ?
+                // Return file not found
+                var response = new HtmlResponse("File not found");
+                response.Respond(responder);
+            }
+            
+            var route = routeList.Find(method, path);
+            if (route.IsCallbackResponse)
+                route.RequestHandler(request).Respond(responder);
+            else
+            {
+                //Resource file response
+                var content = (string)ResourceUtility.GetObject(resourceManager, route.FileResource);
+                var response = new FileResponse(content, route.ContentType);
+                response.Respond(responder);
             }
         }
     }

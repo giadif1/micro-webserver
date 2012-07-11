@@ -37,7 +37,7 @@
     <Compile Include="Requests\RequestRouteList.cs" />
     <Compile Include="Requests\WebRequest.cs" />
     <Compile Include="Requests\WebRequestHandler.cs" />
-    <Compile Include="Utilities\HttpMethods.cs" />
+    <Compile Include="Utilities\HttpMethod.cs" />
     <Compile Include="Utilities\HttpUtility.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
     <Compile Include="WebResponses\EmptyResponse.cs" />
@@ -50,8 +50,10 @@
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Gadgeteer.WebServer, Version=2.41.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SPOT.Native">
     </Reference>
+    <Reference Include="Microsoft.SPOT.Net" />
     <Reference Include="System.Http" />
   </ItemGroup>
   <ItemGroup>
@@ -59,5 +61,18 @@
       <Project>{68AEC5FC-9397-4B7A-B4F1-4056E6AD0FFA}</Project>
       <Name>Logging</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DLLs\CommonExtensions Documentation.htm" />
+    <Content Include="DLLs\Gadgeteer.dll" />
+    <Content Include="DLLs\Gadgeteer.pdb" />
+    <Content Include="DLLs\Gadgeteer.WebClient.dll" />
+    <Content Include="DLLs\Gadgeteer.WebClient.pdb" />
+    <Content Include="DLLs\Gadgeteer.WebClient.xml" />
+    <Content Include="DLLs\Gadgeteer.WebServer.dll" />
+    <Content Include="DLLs\Gadgeteer.WebServer.pdb" />
+    <Content Include="DLLs\Gadgeteer.WebServer.xml" />
+    <Content Include="DLLs\NetMf.CommonExtensions.dll" />
+    <Content Include="DLLs\NetMf.CommonExtensions.XML" />
   </ItemGroup>
 </Project>

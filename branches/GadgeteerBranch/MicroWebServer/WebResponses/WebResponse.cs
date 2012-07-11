@@ -23,24 +23,11 @@ namespace MicroWebServer
             additionalHeaders.Add(key, value);
         }
 
-        public void Respond(HttpListenerContext listenerContext)
+        public void Respond(Gadgeteer.Networking.Responder responder)
         {
-            var response = listenerContext.Response;
-            response.ContentType = ContentType;
-            response.StatusCode = (int)StatusCode;
-            foreach (string headerKey in additionalHeaders.AllKeys)
-                listenerContext.Response.Headers.Add(headerKey, additionalHeaders[headerKey]);
-            Stream output = response.OutputStream;
-            
-            if (Content != null)
-            {
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Content);
-                response.ContentLength64 = buffer.Length;
-                output.Write(buffer, 0, buffer.Length);
-                output.Close();
-                //TODO: testen wat er gebeurt als er geen content is !!
-            }
-            output.Close();
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Content);
+            responder.Respond(buffer, ContentType);
+            //TODO: wat met uitgaande headers ???
         }
     }
 }
