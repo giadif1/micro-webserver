@@ -20,12 +20,12 @@ namespace WebServerTest
             Debug.Print("IP Address = " + NI.IPAddress + ", Gateway = " + NI.GatewayAddress + ", MAC = " + NI.PhysicalAddress);
 
             var webServer = new WebServer(null, Resources.ResourceManager);
-            webServer.Add(new RequestRoute("/", Resources.StringResources.Index, "text/html"));
-            webServer.Add(new RequestRoute("/MyStyles.css", Resources.StringResources.MyStyles, "text/css"));
-            webServer.Add(new RequestRoute("/test", HttpMethods.GET, request => new HtmlResponse("Hello World !")));
-            webServer.Add(new RequestRoute("/redirect", HttpMethods.GET, request => new RedirectResponse("/")));
-            webServer.Add(new RequestRoute("/api/time", HttpMethods.GET, GetTime));
-            webServer.Add(new RequestRoute("/api/time", HttpMethods.PUT, SetTime));
+            webServer.Add("/", Resources.StringResources.Index, "text/html");
+            webServer.Add("/MyStyles.css", Resources.StringResources.MyStyles, "text/css");
+            webServer.Add("/test", HttpMethod.GET, request => new HtmlResponse("Hello World !"));
+            webServer.Add("/redirect", HttpMethod.GET, request => new RedirectResponse("/"));
+            webServer.Add("/api/time", HttpMethod.GET, GetTime);
+            webServer.Add("/api/time", HttpMethod.PUT, SetTime);
 
             Thread.Sleep(Timeout.Infinite);
         }
