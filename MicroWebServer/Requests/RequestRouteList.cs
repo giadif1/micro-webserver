@@ -20,17 +20,17 @@ namespace MicroWebServer
         {
             //TODO: nog controleren of het pad de juiste vorm heeft (begint met /, bevat alleen /, letters en cijfers, ...)
             if (route.IsFileResponse)
-                table.Add(HttpMethods.GET.ToString() + "_" + route.Path, route);
+                table.Add(HttpMethod.GET.ToString() + "_" + route.Path, route);
             else
                 table.Add(route.HttpMethod.ToString() + "_" + route.Path, route);
         }
 
-        public bool Contains(HttpMethods httpMethod, string path)
+        public bool Contains(HttpMethod httpMethod, string path)
         {
             return table.Contains(httpMethod.ToString() + "_" + path);
         }
 
-        public RequestRoute Find(HttpMethods httpMethod, string path)
+        public RequestRoute Find(HttpMethod httpMethod, string path)
         {
             return (RequestRoute)table[httpMethod.ToString() + "_" + path];
         }

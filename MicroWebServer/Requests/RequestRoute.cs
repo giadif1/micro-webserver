@@ -1,4 +1,7 @@
 using System;
+using System.Net;
+using Gadgeteer.Networking;
+using gHttpMethod = Gadgeteer.Networking.WebServer.HttpMethod;
 
 namespace MicroWebServer
 {
@@ -6,13 +9,13 @@ namespace MicroWebServer
     {
         public string Path { get; private set; }
         public WebRequestHandler RequestHandler { get; private set; }
-        public HttpMethods HttpMethod { get; set; }
+        public HttpMethod HttpMethod { get; set; }
         public Enum FileResource { get; private set; }
         public string ContentType { get; private set; }
         public bool IsFileResponse { get { return RequestHandler == null; } }
         public bool IsCallbackResponse { get { return RequestHandler != null; } }
 
-        public RequestRoute(string path, HttpMethods httpMethod, WebRequestHandler requestHandler)
+        public RequestRoute(string path, HttpMethod httpMethod, WebRequestHandler requestHandler)
         {
             Path = path;
             HttpMethod = httpMethod;
