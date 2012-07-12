@@ -12,12 +12,6 @@ namespace WebServerTest
         public static void Main()
         {
             Debug.EnableGCMessages(false);
-            Debug.Print("Web Server test software");
-
-            // Print the network interface information to the debug interface
-            Microsoft.SPOT.Net.NetworkInformation.NetworkInterface NI = Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0];
-            //NI.EnableDhcp();
-            Debug.Print("IP Address = " + NI.IPAddress + ", Gateway = " + NI.GatewayAddress + ", MAC = " + NI.PhysicalAddress);
 
             var webServer = new WebServer(null, Resources.ResourceManager);
             webServer.Add("/", Resources.StringResources.Index, "text/html");
