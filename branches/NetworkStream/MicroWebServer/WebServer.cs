@@ -3,38 +3,45 @@ using System.Net;
 using System.Threading;
 using Microsoft.SPOT;
 using System.Resources;
+using System.Net.Sockets;
 
 namespace MicroWebServer
 {
     public class WebServer
     {
+        public const int MAX_CONNECTIONS_BACKLOG = 10;
         private readonly RequestRouteList routeList;
         private Thread mainThread;
         private readonly ILog log;
-        private HttpListener listener;
         private readonly ResourceManager resourceManager;
+        private readonly int portNumber;
+        private readonly string defaultFileName;
 
-        public WebServer(ILog log, ResourceManager resourceManager)
+
+        public WebServer(ILog log, ResourceManager resourceManager, int portNumber=80, string defaultFileName= "index.html")
         {
             this.log = log;
             routeList = new RequestRouteList();
+            this.resourceManager = resourceManager;
+            this.portNumber = portNumber;
+            this.defaultFileName = defaultFileName;
             mainThread = new Thread(MainThreadHandler);
             mainThread.Start();
-            this.resourceManager = resourceManager;
         }
 
-        public bool MainThreadIsAlive { get { return mainThread.IsAlive; } }
+        //public bool MainThreadIsAlive { get { return mainThread.IsAlive; } }
 
-        public ThreadState MainThreadStatus { get { return mainThread.ThreadState; } }
+        //public ThreadState MainThreadStatus { get { return mainThread.ThreadState; } }
 
-        public void RestartMainThread()
+        /*public void RestartMainThread()
         {
+            //TODO: hopelijk is deze binnenkort niet meer nodig
             mainThread.Abort();
             Thread.Sleep(2000);
             //log.Report(PriorityType.Alert, "Webserver", "Creating a new main thread for the webserver !!!");
             mainThread = new Thread(MainThreadHandler);
             mainThread.Start();
-        }
+        }*/
 
         public void Add(RequestRoute route)
         {
@@ -43,8 +50,17 @@ namespace MicroWebServer
 
         private void MainThreadHandler()
         {
-            listener = new HttpListener("http");
-            bool abortRequested = false;
+            Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listener.Bind(new IPEndPoint(IPAddress.Any, portNumber));
+            listener.Listen(MAX_CONNECTIONS_BACKLOG);
+
+            while (true)//TODO: the vervangen door while (!abortRequested)
+            {
+                Socket socket = listener.Accept();
+                new WebRequestHandlerInternal(socket, routeList);
+            }
+
+            //bool abortRequested = false;
             listener.Start();
 
             //TODO: Threading verhaal nog te bekijken !!

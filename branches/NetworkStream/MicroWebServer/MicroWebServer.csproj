@@ -40,6 +40,7 @@
     <Compile Include="Utilities\HttpMethods.cs" />
     <Compile Include="Utilities\HttpUtility.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
+    <Compile Include="WebRequestHandlerInternal.cs" />
     <Compile Include="WebResponses\EmptyResponse.cs" />
     <Compile Include="WebResponses\FileResponse.cs" />
     <Compile Include="WebResponses\HtmlResponse.cs" />
@@ -52,6 +53,8 @@
   <ItemGroup>
     <Reference Include="Microsoft.SPOT.Native">
     </Reference>
+    <Reference Include="NetMf.CommonExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
     <Reference Include="System.Http" />
   </ItemGroup>
   <ItemGroup>
@@ -59,5 +62,10 @@
       <Project>{68AEC5FC-9397-4B7A-B4F1-4056E6AD0FFA}</Project>
       <Name>Logging</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DLLs\NetMf.CommonExtensions.dll" />
+    <Content Include="DLLs\NetMf.CommonExtensions.XML" />
   </ItemGroup>
 </Project>
